@@ -14,7 +14,14 @@ window.addEventListener('DOMContentLoaded', () => {
     replaceText(`${type}-version`, process.versions[type])
   }
 
-
+  document.getElementById('toggle-info').addEventListener('click', (e) => {
+    e.preventDefault;
+    document.getElementById('info').classList.toggle('hidden')
+  })
+  document.getElementById('toggle-apps').addEventListener('click', (e) => {
+    e.preventDefault;
+    document.getElementById('apps').classList.toggle('hidden')
+  })
 
   Connection((err, server) => {
     if (err) {
@@ -43,12 +50,13 @@ window.addEventListener('DOMContentLoaded', () => {
         if (!msg.value) {
           return;
         }
-        console.log(msg);
         if (msg.value.content.type == 'patchboot-app') {
-          
           const link = document.createElement('div')
-          link.innerHTML = `${msg.value.content.comment} by ${msg.value.author} 
-          (${(new Date(msg.value.timestamp)).toISOString()})`
+          link.classList.add('block', 'app')
+          link.innerHTML = `<h2>${msg.value.content.mentions[0].name||msg.value.content.comment||''}</h2>
+          <div class="comment">${msg.value.content.comment||''}</div>
+          <div class="author">${msg.value.author||''}</div>
+          <div class="time">${(new Date(msg.value.timestamp)).toISOString()||''}</div>`
           const blobId = msg.value.content.mentions[0].link;
           link.addEventListener('click', () => { 
             Connection((err, server) => {
