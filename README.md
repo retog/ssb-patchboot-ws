@@ -8,7 +8,7 @@ PatchBoot Electron provides an electron app that allows executing small app retr
 
 ## Usage
 
-You need to have an instance of [ssb-server](https://github.com/ssbc/ssb-server) running. If the data and keys are not stored in `~/.ssb` you need to set `ssb_appname` accordingly.
+You need to have an instance of [ssb-server](https://github.com/ssbc/ssb-server) running. If you have [Patchwork](https://github.com/ssbc/patchwork/) installed and running you have this already. If the data and keys are not stored in `~/.ssb` you need to set `ssb_appname` accordingly.
 
     npm install
     npm run start

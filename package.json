@@ -12,8 +12,8 @@
     "Scuttlebutt",
     "ssb"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Reto Gmür",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^9.1.2"
   },
