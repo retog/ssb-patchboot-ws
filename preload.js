@@ -13,24 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
   for (const type of ['chrome', 'node', 'electron']) {
     replaceText(`${type}-version`, process.versions[type])
   }
-  console.log('Connecting')
 
-  Connection((err, server) => {
-    if (err) {
-      throw err
-    }
-    console.log('Connection established')
-
-    server.whoami((err, keys) => {
-      if (err) console.log('could not get keys, got err', err)
-      else {
-        replaceText('user-id', keys.id)
-      }
-
-      console.log('disconnecting from server')
-      server.close()
-    })
-  })
 
 
   Connection((err, server) => {
@@ -50,7 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         if (types.indexOf(msg.value.content.type) === -1) {
           if (msg.value.content.type == 'patchboot-app') {
-            console.log(msg.value.content);
+            console.log(msg);
             const link = document.createElement('div')
             link.textContent = msg.value.content.comment
             const blobId = msg.value.content.mentions[0].link;
@@ -58,12 +41,10 @@ window.addEventListener('DOMContentLoaded', () => {
               pull(server.blobs.get(blobId), pull.collect(function (err, values) {
                 if (err) throw err
                 const code = String.fromCharCode.apply(null, values[0])
-                console.log('value', String.fromCharCode.apply(null, values[0]));
+                console.log('executing', code);
                 const fun = new Function('root', 'ssb', code);
                 fun(shadowView, Connection);
               }))
-              shadowView.innerHTML = `<h1>${msg.value.content.comment}</h1>
-              <p>${msg.value.content.mentions[0].name} - ${msg.value.content.mentions[0].link}</p>`
             })
             element.append(link)
           }
@@ -73,5 +54,6 @@ window.addEventListener('DOMContentLoaded', () => {
       }));
       console.log("done");
     }
+    //server.close();
   });
 })

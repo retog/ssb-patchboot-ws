@@ -9,17 +9,17 @@ Connection(async (err, server) => {
     else {
         console.log('hj ' + server);
         console.log(server.publish);
-        var script = fs.readFileSync(path.join(__dirname, '.', 'HelloWorldApp.js'), 'utf8');
+        var script = fs.readFileSync(path.join(__dirname, '.', 'WhoamiApp.js'), 'utf8');
         console.log('response', script);
         pull(pull.values([script]), server.blobs.add(undefined, function (err, hash) {
             console.log('cb ', arguments);
             server.publish({
                 type: 'patchboot-app',
-                comment: 'Hello World',
+                comment: 'Whoami',
                 mentions: [
                     {
                         'link': hash,
-                        'name': 'Hello World App',
+                        'name': 'Whoami App',
                         'type': 'app'
                     }
                 ]
