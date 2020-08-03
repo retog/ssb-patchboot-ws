@@ -15,7 +15,7 @@ Connection(async (err, server) => {
             console.log('cb ', arguments);
             server.publish({
                 type: 'patchboot-app',
-                comment: 'A hello world app',
+                comment: 'Hello Noam',
                 mentions: [
                     {
                         'link': hash,

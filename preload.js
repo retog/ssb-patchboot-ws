@@ -53,8 +53,17 @@ window.addEventListener('DOMContentLoaded', () => {
             console.log(msg.value.content);
             const link = document.createElement('div')
             link.textContent = msg.value.content.comment
+            const blobId = msg.value.content.mentions[0].link;
             link.addEventListener('click', () => { 
-              shadowView.innerHTML = `<h1>fobar ${msg.value.content.comment}</h1>`
+              pull(server.blobs.get(blobId), pull.collect(function (err, values) {
+                if (err) throw err
+                const code = String.fromCharCode.apply(null, values[0])
+                console.log('value', String.fromCharCode.apply(null, values[0]));
+                const fun = new Function('root', 'ssb', code);
+                fun(shadowView, Connection);
+              }))
+              shadowView.innerHTML = `<h1>${msg.value.content.comment}</h1>
+              <p>${msg.value.content.mentions[0].name} - ${msg.value.content.mentions[0].link}</p>`
             })
             element.append(link)
           }
