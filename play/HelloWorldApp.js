@@ -7,4 +7,5 @@ const html = `
   </body>
 </html>`;
 console.log('Hello world');
+root.innerHTML = html;
 //console.log('window', window)
