@@ -35,16 +35,23 @@ window.addEventListener('DOMContentLoaded', () => {
           if (msg.value.content.type == 'patchboot-app') {
             console.log(msg);
             const link = document.createElement('div')
-            link.textContent = msg.value.content.comment
+            link.innerHTML = `${msg.value.content.comment} by ${msg.value.author} 
+            (${(new Date(msg.value.timestamp)).toISOString()})`
             const blobId = msg.value.content.mentions[0].link;
             link.addEventListener('click', () => { 
-              pull(server.blobs.get(blobId), pull.collect(function (err, values) {
-                if (err) throw err
-                const code = String.fromCharCode.apply(null, values[0])
-                console.log('executing', code);
-                const fun = new Function('root', 'ssb', code);
-                fun(shadowView, Connection);
-              }))
+              Connection((err, server) => {
+                pull(
+                  server.blobs.get(blobId), 
+                  pull.collect(function (err, values) {
+                    if (err) throw err
+                    const code = values.join('')
+                    console.log('executing', code);
+                    window.setTimeout(() => {
+                      const fun = new Function('root', 'ssb', code);
+                      fun(shadowView, Connection);
+                    }, 0);
+                }))
+              })
             })
             element.append(link)
           }
