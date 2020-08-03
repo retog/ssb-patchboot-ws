@@ -23,7 +23,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     server.whoami((err, keys) => {
       if (err) console.log('could not get keys, got err', err)
-      else console.log('whoami details:', keys.id)
+      else {
+        replaceText('user-id', keys.id)
+      }
 
       console.log('disconnecting from server')
       server.close()
