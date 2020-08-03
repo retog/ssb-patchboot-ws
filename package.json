@@ -18,5 +18,10 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^9.1.2"
+  },
+  "dependencies": {
+    "pull-paramap": "^1.2.2",
+    "ssb-client": "^4.6.0",
+    "ssb-ref": "^2.12.0"
   }
 }

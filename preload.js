@@ -1,3 +1,7 @@
+const Connection = require('ssb-client')
+const pull = require('pull-stream')
+pull.paraMap = require('pull-paramap')
+
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
@@ -9,4 +13,21 @@ window.addEventListener('DOMContentLoaded', () => {
   for (const type of ['chrome', 'node', 'electron']) {
     replaceText(`${type}-version`, process.versions[type])
   }
+  console.log('Connecting')
+
+  Connection((err, server) => {
+    if (err) {
+      throw err
+    }
+    console.log('Connection established')
+
+    server.whoami((err, keys) => {
+      if (err) console.log('could not get keys, got err', err)
+      else console.log('whoami details:', keys.id)
+
+      console.log('disconnecting from server')
+      server.close()
+    })
+  })
+
 })
