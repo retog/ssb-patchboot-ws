@@ -26,35 +26,46 @@ window.addEventListener('DOMContentLoaded', () => {
       const shadowView = view.attachShadow({mode: 'closed'});
       console.log('monitoring', server);
       console.log(server.blobs.ls());
-      const types = [];
-      pull(server.createFeedStream({ live: true }), pull.drain(function (msg) {
+      const opts = {
+        reverse: true,
+        query: [
+          {
+            $filter: {
+              value: {
+                content: { type: 'patchboot-app' }
+              }
+            }
+          }
+        ]
+      }
+    
+      pull(server.query.read(opts), pull.drain(function (msg) {
         if (!msg.value) {
           return;
         }
-        if (types.indexOf(msg.value.content.type) === -1) {
-          if (msg.value.content.type == 'patchboot-app') {
-            console.log(msg);
-            const link = document.createElement('div')
-            link.innerHTML = `${msg.value.content.comment} by ${msg.value.author} 
-            (${(new Date(msg.value.timestamp)).toISOString()})`
-            const blobId = msg.value.content.mentions[0].link;
-            link.addEventListener('click', () => { 
-              Connection((err, server) => {
-                pull(
-                  server.blobs.get(blobId), 
-                  pull.collect(function (err, values) {
-                    if (err) throw err
-                    const code = values.join('')
-                    console.log('executing', code);
-                    window.setTimeout(() => {
-                      const fun = new Function('root', 'ssb', code);
-                      fun(shadowView, Connection);
-                    }, 0);
-                }))
-              })
+        console.log(msg);
+        if (msg.value.content.type == 'patchboot-app') {
+          
+          const link = document.createElement('div')
+          link.innerHTML = `${msg.value.content.comment} by ${msg.value.author} 
+          (${(new Date(msg.value.timestamp)).toISOString()})`
+          const blobId = msg.value.content.mentions[0].link;
+          link.addEventListener('click', () => { 
+            Connection((err, server) => {
+              pull(
+                server.blobs.get(blobId), 
+                pull.collect(function (err, values) {
+                  if (err) throw err
+                  const code = values.join('')
+                  console.log('executing', code);
+                  window.setTimeout(() => {
+                    const fun = new Function('root', 'ssb', code);
+                    fun(shadowView, Connection);
+                  }, 0);
+              }))
             })
-            element.append(link)
-          }
+          })
+          element.append(link)
         }
       }, function (end) {
         console.log("ending with " + end);
