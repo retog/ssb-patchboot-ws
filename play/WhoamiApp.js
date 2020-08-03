@@ -1,8 +1,17 @@
+const html = `
+  <body>
+    <h1>Who am I?</h1>
+
+    <div>I am ...</div>
+  </body>
+</html>`;
+root.innerHTML = html;
+
 ssb((err, server) => {
   if (err) {
     throw err
   }
-  console.log('Connection established')
+  console.log('Connection for whoami established')
 
   server.whoami((err, keys) => {
     if (err) console.log('could not get keys, got err', err)
