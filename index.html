@@ -1,22 +1,33 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-eval'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-eval'">
-    <title>PatchBoot - Scuttlebutt Bootloader</title>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-eval'">
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-eval'">
+  <link rel="stylesheet" href="./index.css">
+  <title>PatchBoot</title>
+</head>
+
+<body>
+  <header id="bar">
     <h1>PatchBoot</h1>
-    <p>PatchBoot is running on Node.js <span id="node-version"></span>, 
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.</p>
-    <p>Click on an app you would like to execute - only execute apps you trust.</p>
+  </header>
+  <main>
+    <header class="block notice">
+      <p>PatchBoot is running on Node.js <span id="node-version"></span>,
+        Chromium <span id="chrome-version"></span>,
+        and Electron <span id="electron-version"></span>.</p>
+      <p>
+        Click on an app you would like to execute - only execute apps you trust.</p>
+    </header>
     <div id="apps"></div>
     <div id="view"></div>
+  </main>
 
-    <!-- You can also require other files to run in this process -->
-    <script src="./renderer.js"></script>
-  </body>
+  <!-- You can also require other files to run in this process -->
+  <script src="./renderer.js"></script>
+</body>
+
 </html>
