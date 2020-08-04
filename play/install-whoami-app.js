@@ -15,14 +15,9 @@ Connection(async (err, server) => {
             console.log('cb ', arguments);
             server.publish({
                 type: 'patchboot-app',
-                comment: 'Whoami',
-                mentions: [
-                    {
-                        'link': hash,
-                        'name': 'Whoami App',
-                        'type': 'app'
-                    }
-                ]
+                name: 'Whoami',
+                comment: 'This app displays the current user',
+                link: hash
             }, function (err, msg) {
                 console.log(msg);
                 server.close();

@@ -26,14 +26,9 @@ Apps are advertised using mesages of the type `patchboot-app` like the followig
 ```
 {
     "type": "patchboot-app",
+    "name": "WomBat Launcher",
     "comment": "A friendly new launcher",
-    "mentions": [
-    {
-        "link": "&CKrrSh72rXhgCzeTKekAPf7fiwtmNml/yFjXCe4ovnE=.sha256",
-        "name": "WomBat Launcher",
-        "type": "launcher"
-    }
-    ]
+    "link": "&CKrrSh72rXhgCzeTKekAPf7fiwtmNml/yFjXCe4ovnE=.sha256",
 }
 ```
 
