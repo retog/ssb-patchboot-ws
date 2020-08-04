@@ -1,4 +1,5 @@
 const html = `
+<html>
   <body>
     <h1>Who am I?</h1>
 
@@ -17,6 +18,7 @@ ssb((err, server) => {
     if (err) console.log('could not get keys, got err', err)
     else {
       const html = `
+      <html>
         <body>
           <h1>Who am I?</h1>
 
