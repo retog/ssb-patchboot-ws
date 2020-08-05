@@ -49,6 +49,7 @@ run.addEventListener('click', () => {
   console.log('name: ',name.value,comment.value,script.value)
   runArea.style.display = 'block';
   const fun = new Function('root', 'ssb', 'pull', script.value);
+  shadowRunArea.innerHTML = '';
   fun(shadowRunArea, ssb, pull);
 })
 save.addEventListener('click', () => {
