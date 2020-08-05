@@ -10,11 +10,11 @@ const html = (name, comment, script) => `
     margin: 0.5rem;
     padding: 0.5rem;
     border-radius: 0.5rem;
-    background: lightgrey;
+    background: #ffffff;
   }
   
   #run-area {
-    background: #FFA500;
+    background: #ffffff;
     border: 1px solid #b0bec5;
     border-radius: 0.5rem;
     margin: 0.5rem;
