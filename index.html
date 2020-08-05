@@ -4,15 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-eval'">
-  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-eval'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'unsafe-eval'">
   <link rel="stylesheet" href="./index.css">
   <title>PatchBoot - Scuttlebutt bootloader</title>
 </head>
 
 <body>
   <header id="bar">
-    <h1>PatchBoot</h1>
+    <h1>PatchBoot <span id="title-ext" /></h1>
     <div id="icons">
       <button id="toggle-info">
         <svg viewBox="0 0 24 24">

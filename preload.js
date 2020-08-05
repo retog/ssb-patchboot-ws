@@ -66,11 +66,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 server.blobs.get(blobId), 
                 pull.collect(function (err, values) {
                   if (err) throw err
+                  document.getElementById('title-ext').innerHTML = ' - Running: '+(msg.value.content.name||msg.value.content.mentions[0].name);
                   const code = values.join('')
                   console.log('executing', code);
                   window.setTimeout(() => {
-                    const fun = new Function('root', 'ssb', code);
-                    fun(shadowView, Connection);
+                    const fun = new Function('root', 'ssb', 'pull', code);
+                    fun(shadowView, Connection, pull);
                   }, 0);
               }))
             });
