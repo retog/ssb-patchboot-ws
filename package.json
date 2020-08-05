@@ -4,7 +4,8 @@
   "description": "A Scuttlebutt bootloader",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager --all ."
   },
   "repository": "https://github.com/retog/patchboot-electron",
   "keywords": [
@@ -15,7 +16,8 @@
   "author": "Reto Gmür",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^9.1.2"
+    "electron": "^9.1.2",
+    "electron-packager": "^15.0.0"
   },
   "dependencies": {
     "pull-paramap": "^1.2.2",
