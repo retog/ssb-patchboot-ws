@@ -109,6 +109,10 @@ body {
   width: -webkit-fill-available;
 }
 
+.small {
+  font-size: .8em;
+}
+
 .hidden {
   max-height: 0 !important;
   border: none;

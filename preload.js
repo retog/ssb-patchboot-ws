@@ -1,6 +1,7 @@
 const Connection = require('ssb-client')
 const pull = require('pull-stream')
 pull.paraMap = require('pull-paramap')
+const { getSelfAssignedName } = require('./lib/identity.js')
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
@@ -30,7 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
     else {
       const element = document.getElementById('apps')
       const view = document.getElementById('view')
-      const shadowView = view.attachShadow({mode: 'closed'});
+      const shadowView = view.attachShadow({ mode: 'closed' });
       const opts = {
         reverse: true,
         query: [
@@ -43,7 +44,7 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         ]
       }
-    
+
       pull(server.query.read(opts), pull.drain(function (msg) {
         if (!msg.value) {
           return;
@@ -54,19 +55,23 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log('app', msg.value);
         const link = document.createElement('div')
         link.classList.add('block', 'app')
-        link.innerHTML = `<h2>${msg.value.content.name||msg.value.content.mentions[0].name||msg.value.content.comment||''}</h2>
-        <div class="comment">${msg.value.content.comment||''}</div>
-        <div class="author">${msg.value.author||''}</div>
-        <div class="time">${(new Date(msg.value.timestamp)).toISOString()||''}</div>`
-        const blobId = msg.value.content.link||msg.value.content.mentions[0].link;
-        link.addEventListener('click', () => { 
+        link.innerHTML = `<h2>${msg.value.content.name || msg.value.content.mentions[0].name || msg.value.content.comment || ''}</h2>
+        <div class="comment">${msg.value.content.comment || ''}</div>
+        <div class="author"><code>${msg.value.author}</code></div>
+        <div class="time">${(new Date(msg.value.timestamp)).toISOString() || ''}</div>`
+        getSelfAssignedName(msg.value.author).then(name => {
+          const authorElem = link.getElementsByClassName('author')[0];
+          authorElem.innerHTML = name+" (<code class='small'>"+msg.value.author+"</code>)";
+        }).catch(e => console.log(e));
+        const blobId = msg.value.content.link || msg.value.content.mentions[0].link;
+        link.addEventListener('click', () => {
           Connection((err, server) => {
             server.blobs.want(blobId).then(() => {
               pull(
-                server.blobs.get(blobId), 
+                server.blobs.get(blobId),
                 pull.collect(function (err, values) {
                   if (err) throw err
-                  document.getElementById('title-ext').innerHTML = ' - Running: '+(msg.value.content.name||msg.value.content.mentions[0].name);
+                  document.getElementById('title-ext').innerHTML = ' - Running: ' + (msg.value.content.name || msg.value.content.mentions[0].name);
                   const code = values.join('')
                   console.log('executing', code);
                   window.setTimeout(() => {
@@ -74,7 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     shadowView.innerHTML = '';
                     fun(shadowView, Connection, pull);
                   }, 0);
-              }))
+                }))
             });
           })
         })
