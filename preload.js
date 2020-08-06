@@ -52,19 +52,11 @@ window.addEventListener('DOMContentLoaded', () => {
         if (msg.value.content.type !== 'patchboot-app') {
           throw "unexpected type"
         }
-        console.log('app', msg.value);
-        const link = document.createElement('div')
-        link.classList.add('block', 'app')
-        link.innerHTML = `<h2>${msg.value.content.name || msg.value.content.mentions[0].name || msg.value.content.comment || ''}</h2>
-        <div class="comment">${msg.value.content.comment || ''}</div>
-        <div class="author"><code>${msg.value.author}</code></div>
-        <div class="time">${(new Date(msg.value.timestamp)).toISOString() || ''}</div>`
-        getSelfAssignedName(msg.value.author).then(name => {
-          const authorElem = link.getElementsByClassName('author')[0];
-          authorElem.innerHTML = name+" (<code class='small'>"+msg.value.author+"</code>)";
-        }).catch(e => console.log(e));
+        const controller = document.createElement('app-controller');
+        controller.app = msg.value;
+        element.append(controller);
         const blobId = msg.value.content.link || msg.value.content.mentions[0].link;
-        link.addEventListener('click', () => {
+        controller.addEventListener('run', () => {
           Connection((err, server) => {
             server.blobs.want(blobId).then(() => {
               pull(
@@ -83,7 +75,6 @@ window.addEventListener('DOMContentLoaded', () => {
             });
           })
         })
-        element.append(link)
       }, function (end) {
         console.log("ending with " + end);
       }));
@@ -91,3 +82,70 @@ window.addEventListener('DOMContentLoaded', () => {
     //server.close();
   });
 })
+
+class AppController extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    const appDescription = this.app;
+    this.classList.add('block', 'app')
+    const link = this.attachShadow({ mode: 'open' });
+    link.innerHTML = `
+        <style>
+          .app>* {
+            margin: 0;
+            padding: 0 var(--spacing, 0.3rem);
+          }
+
+          .app>*:not(:first-child) {
+            padding-top: var(--spacing, 0.3rem);
+          }
+
+          .app>*:not(:last-child) {
+            border-bottom: 1px solid var(--lineColor);
+            padding-bottom: var(--spacing, 0.3rem);
+          }
+
+          .app .author::before {
+            font-family: inherit;
+            content: 'by ';
+            color: var(--lineColor);
+          }
+
+          .app .time::before {
+            font-family: inherit;
+            content: 'published ';
+            color: var(--lineColor);
+          }
+
+          .app>*:empty::before {
+            display: block;
+            content: ' ';
+            white-space: pre;
+            background: #eeeeee;
+            height: 1em;
+            width: -webkit-fill-available;
+          }
+
+          .small {
+            font-size: .8em;
+          }
+        </style>
+        <div class="app">
+          <h2>${appDescription.content.name || appDescription.content.mentions[0].name || appDescription.content.comment || ''}</h2>
+          <div class="comment">${appDescription.content.comment || ''}</div>
+          <div class="author"><code>${appDescription.author}</code></div>
+          <div class="time">${(new Date(appDescription.timestamp)).toISOString() || ''}</div></div>`
+    getSelfAssignedName(appDescription.author).then(name => {
+      const authorElem = link.querySelector('.author');
+      authorElem.innerHTML = name + " (<code class='small'>" + appDescription.author + "</code>)";
+    }).catch(e => console.log(e));
+    
+    link.addEventListener('click', () => {
+      this.dispatchEvent(new Event('run'));      
+    })
+  }
+}
+
+customElements.define("app-controller", AppController);
