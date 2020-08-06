@@ -71,6 +71,7 @@ window.addEventListener('DOMContentLoaded', () => {
                   console.log('executing', code);
                   window.setTimeout(() => {
                     const fun = new Function('root', 'ssb', 'pull', code);
+                    shadowView.innerHTML = '';
                     fun(shadowView, Connection, pull);
                   }, 0);
               }))
