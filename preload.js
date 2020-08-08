@@ -2,6 +2,7 @@ const Connection = require('ssb-client')
 const pull = require('pull-stream')
 pull.paraMap = require('pull-paramap')
 const { getSelfAssignedName } = require('./lib/identity.js')
+const Prism = require('prismjs');
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
@@ -117,7 +118,8 @@ function showSource(name, code) {
   main.classList.add('main')
   const pre = document.createElement('pre')
   main.appendChild(pre)
-  pre.innerText = code
+  const html = Prism.highlight(code, Prism.languages.javascript, 'javascript');
+  pre.innerHTML = html
 
   const footer = document.createElement('div')
   inner.appendChild(footer)
