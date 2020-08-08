@@ -65,7 +65,6 @@ window.addEventListener('DOMContentLoaded', () => {
                   if (err) throw err
                   document.getElementById('title-ext').innerHTML = ' - Running: ' + (msg.value.content.name || msg.value.content.mentions[0].name);
                   const code = values.join('')
-                  console.log('executing', code);
                   window.setTimeout(() => {
                     const fun = new Function('root', 'ssb', 'pull', code);
                     shadowView.innerHTML = '';
@@ -74,7 +73,20 @@ window.addEventListener('DOMContentLoaded', () => {
                 }))
             });
           })
-        })
+        });
+        controller.addEventListener('view-source', () => {
+          Connection((err, server) => {
+            server.blobs.want(blobId).then(() => {
+              pull(
+                server.blobs.get(blobId),
+                pull.collect(function (err, values) {
+                  if (err) throw err
+                  const code = values.join('')
+                  showSource((msg.value.content.name || msg.value.content.mentions[0].name), code)
+                }))
+            });
+          })
+        });
       }, function (end) {
         console.log("ending with " + end);
       }));
@@ -83,6 +95,50 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 })
 
+function showSource(name, code) {
+  const outer = document.createElement('div')
+  outer.id = 'outer'
+  const oldTop = window.scrollY
+  const oldLeft = window.scrollX
+  window.scroll(0,0)
+  document.body.classList.add('modal-open')
+  document.body.appendChild(outer)
+  const inner = document.createElement('div')
+  inner.id = 'inner'
+  outer.appendChild(inner)
+
+  const header = document.createElement('div')
+  inner.appendChild(header)
+  header.classList.add('header')
+  header.innerText = 'View source: '+name
+
+  const main = document.createElement('div')
+  inner.appendChild(main)
+  main.classList.add('main')
+  const pre = document.createElement('pre')
+  main.appendChild(pre)
+  pre.innerText = code
+
+  const footer = document.createElement('div')
+  inner.appendChild(footer)
+  footer.classList.add('footer')
+  const closebtn = document.createElement('button')
+  footer.appendChild(closebtn)
+  closebtn.innerText = 'Close'
+
+  const close = () => {
+    document.body.removeChild(outer)
+    document.body.classList.remove('modal-open')
+    window.scroll(oldLeft, oldTop)
+  }
+
+  outer.addEventListener('click', close)
+  closebtn.addEventListener('click', close)
+  inner.addEventListener('click', (event) => {
+    event.stopPropagation()
+  })
+}
+
 class AppController extends HTMLElement {
   constructor() {
     super();
@@ -90,8 +146,8 @@ class AppController extends HTMLElement {
   connectedCallback() {
     const appDescription = this.app;
     this.classList.add('block', 'app')
-    const link = this.attachShadow({ mode: 'open' });
-    link.innerHTML = `
+    const controllerArea = this.attachShadow({ mode: 'open' });
+    controllerArea.innerHTML = `
         <style>
           .app>* {
             margin: 0;
@@ -136,14 +192,19 @@ class AppController extends HTMLElement {
           <h2>${appDescription.content.name || appDescription.content.mentions[0].name || appDescription.content.comment || ''}</h2>
           <div class="comment">${appDescription.content.comment || ''}</div>
           <div class="author"><code>${appDescription.author}</code></div>
-          <div class="time">${(new Date(appDescription.timestamp)).toISOString() || ''}</div></div>`
+          <div class="time">${(new Date(appDescription.timestamp)).toISOString() || ''}</div>
+          <div class="action"><button id="run">Run</button> <button id="source">View Source</button></div></div>`
+    
     getSelfAssignedName(appDescription.author).then(name => {
-      const authorElem = link.querySelector('.author');
+      const authorElem = controllerArea.querySelector('.author');
       authorElem.innerHTML = name + " (<code class='small'>" + appDescription.author + "</code>)";
     }).catch(e => console.log(e));
     
-    link.addEventListener('click', () => {
+    controllerArea.getElementById('run').addEventListener('click', () => {
       this.dispatchEvent(new Event('run'));      
+    })
+    controllerArea.getRootNode().getElementById('source').addEventListener('click', () => {
+      this.dispatchEvent(new Event('view-source'));      
     })
   }
 }
