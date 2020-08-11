@@ -1,9 +1,9 @@
 const ssb = require('ssb-client')
 const pull = require('pull-stream')
 pull.paraMap = require('pull-paramap')
-const { IdentityManager } = require('./lib/identity.js')
+const { IdentityManager } = require('./lib/IdentityManager.js')
 const Prism = require('prismjs');
-const {VotesManager} = require('./lib/voting.js')
+const {VotesManager} = require('./lib/VotesManager.js')
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
