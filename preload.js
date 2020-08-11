@@ -3,6 +3,7 @@ const pull = require('pull-stream')
 pull.paraMap = require('pull-paramap')
 const { getSelfAssignedName } = require('./lib/identity.js')
 const Prism = require('prismjs');
+const {vote, getVotes, getOwnVote} = require('./lib/voting.js')
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
@@ -54,7 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
           throw "unexpected type"
         }
         const controller = document.createElement('app-controller');
-        controller.app = msg.value;
+        controller.msg = msg;
         element.append(controller);
         const blobId = msg.value.content.link || msg.value.content.mentions[0].link;
         controller.addEventListener('run', () => {
@@ -70,7 +71,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     const fun = new Function('root', 'ssb', 'pull', code);
                     shadowView.innerHTML = '';
                     fun(shadowView, Connection, pull);
-                  }, 0);
+                  }, 0)
+                  server.close()
                 }))
             });
           })
@@ -85,14 +87,26 @@ window.addEventListener('DOMContentLoaded', () => {
                   const code = values.join('')
                   showSource((msg.value.content.name || msg.value.content.mentions[0].name), code)
                 }))
+                server.close()
             });
           })
-        });
+        })
+        controller.addEventListener('like', async () => {
+          try {
+            console.log(await getVotes(msg.keys));
+          } catch (e) {
+            console.log('error', e);
+          }
+          return true
+        })
+        controller.addEventListener('unlike', () => {
+          vote(msg.key, 0)
+        })
       }, function (end) {
         console.log("ending with " + end);
       }));
+      server.close()
     }
-    //server.close();
   });
 })
 
@@ -146,7 +160,7 @@ class AppController extends HTMLElement {
     super();
   }
   connectedCallback() {
-    const appDescription = this.app;
+    const appDescription = this.msg.value;
     this.classList.add('block', 'app')
     const controllerArea = this.attachShadow({ mode: 'open' });
     controllerArea.innerHTML = `
@@ -189,13 +203,34 @@ class AppController extends HTMLElement {
           .small {
             font-size: .8em;
           }
+
+          .hidden {
+            display: none
+          }
         </style>
         <div class="app">
           <h2>${appDescription.content.name || appDescription.content.mentions[0].name || appDescription.content.comment || ''}</h2>
           <div class="comment">${appDescription.content.comment || ''}</div>
           <div class="author"><code>${appDescription.author}</code></div>
           <div class="time">${(new Date(appDescription.timestamp)).toISOString() || ''}</div>
-          <div class="action"><button id="run">Run</button> <button id="source">View Source</button></div></div>`
+          <div class="action">
+          <button id="run">Run</button>
+          <button id="source">View Source</button>
+          <button id="like" class="hidden">Add to my apps</button>
+          <button id="unlike">Remove from my apps</button>
+          </div></div>`
+    
+    getOwnVote().then(liked => {
+      if (liked) {
+        controllerArea.getElementById('like').classList.add('hidden')
+        controllerArea.getElementById('unlike').classList.remove('hidden')
+      } else {
+        controllerArea.getElementById('like').classList.remove('hidden')
+        controllerArea.getElementById('unlike').classList.add('hidden')
+      }
+    }, e => {
+      console.log("error getting own vote:", e)
+    })
     
     getSelfAssignedName(appDescription.author).then(name => {
       const authorElem = controllerArea.querySelector('.author');
@@ -203,10 +238,22 @@ class AppController extends HTMLElement {
     }).catch(e => console.log(e));
     
     controllerArea.getElementById('run').addEventListener('click', () => {
-      this.dispatchEvent(new Event('run'));      
+      this.dispatchEvent(new Event('run'));
     })
     controllerArea.getRootNode().getElementById('source').addEventListener('click', () => {
-      this.dispatchEvent(new Event('view-source'));      
+      this.dispatchEvent(new Event('view-source'));
+    })
+    controllerArea.getRootNode().getElementById('like').addEventListener('click', async () => {
+      await vote(this.msg.key, 1)
+      this.dispatchEvent(new Event('like'))
+      controllerArea.getElementById('like').classList.add('hidden')
+        controllerArea.getElementById('unlike').classList.remove('hidden')
+    })
+    controllerArea.getRootNode().getElementById('unlike').addEventListener('click', async () => {
+      await vote(this.msg.key, 0)
+      this.dispatchEvent(new Event('unlike'))
+      controllerArea.getElementById('like').classList.remove('hidden')
+      controllerArea.getElementById('unlike').classList.add('hidden')
     })
   }
 }
