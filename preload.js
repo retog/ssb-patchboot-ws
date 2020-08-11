@@ -16,6 +16,9 @@ window.addEventListener('DOMContentLoaded', () => {
   for (const type of ['chrome', 'node', 'electron']) {
     replaceText(`${type}-version`, process.versions[type])
   }
+  if (process.env.ssb_appname) {
+    replaceText(`app_name`, 'SSB App: '+process.env.ssb_appname+'.')
+  } 
 
   document.getElementById('toggle-info').addEventListener('click', (e) => {
     e.preventDefault;
