@@ -1,9 +1,9 @@
-const Connection = require('ssb-client')
+const ssb = require('ssb-client')
 const pull = require('pull-stream')
 pull.paraMap = require('pull-paramap')
-const { getSelfAssignedName } = require('./lib/identity.js')
+const { IdentityManager } = require('./lib/identity.js')
 const Prism = require('prismjs');
-const {vote, getVotes, getOwnVote} = require('./lib/voting.js')
+const {VotesManager} = require('./lib/voting.js')
 
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
@@ -26,11 +26,12 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('apps').classList.toggle('hidden')
   })
 
-  Connection((err, server) => {
+  ssb((err, server) => {
     if (err) {
       console.log('could not get keys, got err', err);
     }
     else {
+      const votesManager = new VotesManager(server)
       const element = document.getElementById('apps')
       const view = document.getElementById('view')
       const shadowView = view.attachShadow({ mode: 'closed' });
@@ -55,57 +56,51 @@ window.addEventListener('DOMContentLoaded', () => {
           throw "unexpected type"
         }
         const controller = document.createElement('app-controller');
-        controller.msg = msg;
+        controller.msg = msg
+        controller.server = server
         element.append(controller);
         const blobId = msg.value.content.link || msg.value.content.mentions[0].link;
         controller.addEventListener('run', () => {
-          Connection((err, server) => {
-            server.blobs.want(blobId).then(() => {
-              pull(
-                server.blobs.get(blobId),
-                pull.collect(function (err, values) {
-                  if (err) throw err
-                  document.getElementById('title-ext').innerHTML = ' - Running: ' + (msg.value.content.name || msg.value.content.mentions[0].name);
-                  const code = values.join('')
-                  window.setTimeout(() => {
-                    const fun = new Function('root', 'ssb', 'pull', code);
-                    shadowView.innerHTML = '';
-                    fun(shadowView, Connection, pull);
-                  }, 0)
-                  server.close()
-                }))
-            });
-          })
+          server.blobs.want(blobId).then(() => {
+            pull(
+              server.blobs.get(blobId),
+              pull.collect(function (err, values) {
+                if (err) throw err
+                document.getElementById('title-ext').innerHTML = ' - Running: ' + (msg.value.content.name || msg.value.content.mentions[0].name);
+                const code = values.join('')
+                window.setTimeout(() => {
+                  const fun = new Function('root', 'ssb', 'pull', code);
+                  shadowView.innerHTML = '';
+                  fun(shadowView, ssb, pull);
+                }, 0)
+              }))
+          });
         });
         controller.addEventListener('view-source', () => {
-          Connection((err, server) => {
-            server.blobs.want(blobId).then(() => {
-              pull(
-                server.blobs.get(blobId),
-                pull.collect(function (err, values) {
-                  if (err) throw err
-                  const code = values.join('')
-                  showSource((msg.value.content.name || msg.value.content.mentions[0].name), code)
-                }))
-                server.close()
-            });
+          server.blobs.want(blobId).then(() => {
+            pull(
+              server.blobs.get(blobId),
+              pull.collect(function (err, values) {
+                if (err) throw err
+                const code = values.join('')
+                showSource((msg.value.content.name || msg.value.content.mentions[0].name), code)
+              }))
           })
         })
         controller.addEventListener('like', async () => {
           try {
-            console.log(await getVotes(msg.keys));
+            console.log(await votesManager.getVotes(msg.keys));
           } catch (e) {
             console.log('error', e);
           }
           return true
         })
         controller.addEventListener('unlike', () => {
-          vote(msg.key, 0)
+          //vote(msg.key, 0)
         })
       }, function (end) {
         console.log("ending with " + end);
       }));
-      server.close()
     }
   });
 })
@@ -161,6 +156,7 @@ class AppController extends HTMLElement {
   }
   connectedCallback() {
     const appDescription = this.msg.value;
+    const votesManager = new VotesManager(this.server)
     this.classList.add('block', 'app')
     const controllerArea = this.attachShadow({ mode: 'open' });
     controllerArea.innerHTML = `
@@ -220,7 +216,7 @@ class AppController extends HTMLElement {
           <button id="unlike">Remove from my apps</button>
           </div></div>`
     
-    getOwnVote().then(liked => {
+    votesManager.getOwnVote(this.msg.key).then(liked => {
       if (liked) {
         controllerArea.getElementById('like').classList.add('hidden')
         controllerArea.getElementById('unlike').classList.remove('hidden')
@@ -232,7 +228,7 @@ class AppController extends HTMLElement {
       console.log("error getting own vote:", e)
     })
     
-    getSelfAssignedName(appDescription.author).then(name => {
+    ;(new IdentityManager(this.server)).getSelfAssignedName(appDescription.author).then(name => {
       const authorElem = controllerArea.querySelector('.author');
       authorElem.innerHTML = name + " (<code class='small'>" + appDescription.author + "</code>)";
     }).catch(e => console.log(e));
@@ -244,13 +240,13 @@ class AppController extends HTMLElement {
       this.dispatchEvent(new Event('view-source'));
     })
     controllerArea.getRootNode().getElementById('like').addEventListener('click', async () => {
-      await vote(this.msg.key, 1)
+      await votesManager.vote(this.msg.key, 1)
       this.dispatchEvent(new Event('like'))
       controllerArea.getElementById('like').classList.add('hidden')
         controllerArea.getElementById('unlike').classList.remove('hidden')
     })
     controllerArea.getRootNode().getElementById('unlike').addEventListener('click', async () => {
-      await vote(this.msg.key, 0)
+      await votesManager.vote(this.msg.key, 0)
       this.dispatchEvent(new Event('unlike'))
       controllerArea.getElementById('like').classList.remove('hidden')
       controllerArea.getElementById('unlike').classList.add('hidden')
