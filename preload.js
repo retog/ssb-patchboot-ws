@@ -27,7 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
   })
   document.getElementById('toggle-apps').addEventListener('click', (e) => {
     e.preventDefault;
-    document.getElementById('apps').classList.toggle('hidden')
+    document.getElementById('apps-area').classList.toggle('hidden')
   })
 
   ssb((err, server) => {
@@ -36,7 +36,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     else {
       const votesManager = new VotesManager(server)
-      const element = document.getElementById('apps')
+      const appsArea = document.getElementById('apps-area')
       const view = document.getElementById('view')
       const shadowView = view.attachShadow({ mode: 'closed' });
       const opts = {
@@ -51,6 +51,21 @@ window.addEventListener('DOMContentLoaded', () => {
           }
         ]
       }
+      appsArea.innerHTML = `<label><input type="checkbox" id="showLiked" />Show only apps I like</label>`
+      const appsGrid = document.createElement('div')
+      appsGrid.id = 'apps'
+      appsArea.appendChild(appsGrid)
+
+      const showLikedcheckbox = document.getElementById('showLiked')
+      showLikedcheckbox.addEventListener('change', (e) => {
+        if (showLikedcheckbox.checked) {
+          appsGrid.classList.add('show-only-liked')
+        } else {
+          appsGrid.classList.remove('show-only-liked')
+        }
+
+      })
+      
 
       pull(server.query.read(opts), pull.drain(function (msg) {
         if (!msg.value) {
@@ -62,7 +77,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const controller = document.createElement('app-controller');
         controller.msg = msg
         controller.server = server
-        element.append(controller);
+        appsGrid.append(controller);
         const blobId = msg.value.content.link || msg.value.content.mentions[0].link;
         controller.addEventListener('run', () => {
           server.blobs.want(blobId).then(() => {
