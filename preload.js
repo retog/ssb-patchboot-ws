@@ -93,7 +93,7 @@ window.addEventListener('DOMContentLoaded', () => {
         })
         controller.addEventListener('like', async () => {
           try {
-            console.log(await votesManager.getVotes(msg.keys));
+            console.log(await votesManager.getVotes(msg.key));
           } catch (e) {
             console.log('error', e);
           }
