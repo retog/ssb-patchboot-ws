@@ -35,9 +35,9 @@ const html = (name, comment, script) => `
 </html>
 `;
 root.innerHTML = html('', '',
-`// root points to the DOM shadow root element
-// sbot to the connect to the Scuttlebutt server
-// pull to pull-stream`);
+`// root: the DOM shadow root element
+// sbot: the RPC connection to the Scuttlebutt server
+// pull: the pull-stream function`);
 const run = root.querySelector('#run');
 const save = root.querySelector('#save');
 const name = root.querySelector('#name');
