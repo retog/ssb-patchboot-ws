@@ -30,12 +30,12 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('apps-area').classList.toggle('hidden')
   })
 
-  ssb((err, server) => {
+  ssb((err, sbot) => {
     if (err) {
       console.log('could not get keys, got err', err);
     }
     else {
-      const votesManager = new VotesManager(server)
+      const votesManager = new VotesManager(sbot)
       const appsArea = document.getElementById('apps-area')
       const view = document.getElementById('view')
       const shadowView = view.attachShadow({ mode: 'closed' });
@@ -67,7 +67,7 @@ window.addEventListener('DOMContentLoaded', () => {
       })
       
 
-      pull(server.query.read(opts), pull.drain(function (msg) {
+      pull(sbot.query.read(opts), pull.drain(function (msg) {
         if (!msg.value) {
           return;
         }
@@ -76,13 +76,13 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         const controller = document.createElement('app-controller');
         controller.msg = msg
-        controller.server = server
+        controller.sbot = sbot
         appsGrid.append(controller);
         const blobId = msg.value.content.link || msg.value.content.mentions[0].link;
         controller.addEventListener('run', () => {
-          server.blobs.want(blobId).then(() => {
+          sbot.blobs.want(blobId).then(() => {
             pull(
-              server.blobs.get(blobId),
+              sbot.blobs.get(blobId),
               pull.collect(function (err, values) {
                 if (err) throw err
                 document.getElementById('title-ext').innerHTML = ' - Running: ' + (msg.value.content.name || msg.value.content.mentions[0].name);
@@ -90,15 +90,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 window.setTimeout(() => {
                   const fun = new Function('root', 'ssb', 'sbot', 'pull', code);
                   shadowView.innerHTML = '';
-                  fun(shadowView, ssb, server, pull);
+                  fun(shadowView, ssb, sbot, pull);
                 }, 0)
               }))
           });
         });
         controller.addEventListener('view-source', () => {
-          server.blobs.want(blobId).then(() => {
+          sbot.blobs.want(blobId).then(() => {
             pull(
-              server.blobs.get(blobId),
+              sbot.blobs.get(blobId),
               pull.collect(function (err, values) {
                 if (err) throw err
                 const code = values.join('')
