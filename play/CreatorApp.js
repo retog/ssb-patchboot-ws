@@ -36,7 +36,7 @@ const html = (name, comment, script) => `
 `;
 root.innerHTML = html('', '',
 `// root points to the DOM shadow root element
-// ssb to the Scuttlebutt Client
+// sbot to the connect to the Scuttlebutt server
 // pull to pull-stream`);
 const run = root.querySelector('#run');
 const save = root.querySelector('#save');
@@ -48,9 +48,9 @@ const shadowRunArea = runArea.attachShadow({mode: 'closed'});
 run.addEventListener('click', () => {
   console.log('name: ',name.value,comment.value,script.value)
   runArea.style.display = 'block';
-  const fun = new Function('root', 'ssb', 'pull', script.value);
+  const fun = new Function('root', 'ssb', 'sbot', 'pull', script.value);
   shadowRunArea.innerHTML = '';
-  fun(shadowRunArea, ssb, pull);
+  fun(shadowRunArea, ssb, sbot, pull);
 })
 save.addEventListener('click', () => {
   if (name.value.trim() === '') {
@@ -60,23 +60,17 @@ save.addEventListener('click', () => {
   if (!confirm("Publish App Irrevocably.")) {
     return;
   }
-  ssb(async (err, server) => {
-    if (err) {
-        throw err;
 
-    }
-    pull(pull.values([script.value]), server.blobs.add(undefined, function (err, hash) {
-      server.publish({
-          type: 'patchboot-app',
-          name: name.value,
-          comment: comment.value,
-          link: hash
-      }, function (err, msg) {
-          if (err) {
-            throw err;
-          }
-          server.close();
-      });
-    }));
-  });
+  pull(pull.values([script.value]), sbot.blobs.add(undefined, function (err, hash) {
+    sbot.publish({
+        type: 'patchboot-app',
+        name: name.value,
+        comment: comment.value,
+        link: hash
+    }, function (err, msg) {
+        if (err) {
+          throw err;
+        }
+    });
+  }));
 })

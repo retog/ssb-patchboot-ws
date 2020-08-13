@@ -34,6 +34,9 @@ Apps are advertised using mesages of the type `patchboot-app` like the followig
 
 The link points to the JavaScript comprising the app. The JavaScript code has access to the following variables:
 
-`ssb`: the [ssb client](https://github.com/ssbc/ssb-client)
-`root`: the root of the shadow DOM
+- `sbot`: an [rpc connection](https://ssbc.github.io/scuttlebutt-protocol-guide/#rpc-protocol) to an sbot
+- `root`: the root of the shadow DOM
+- `pull`: the [pull-stream](https://github.com/pull-stream/pull-stream) function object
+- `ssb`: [*deprecated: use `sbot` instead*] the [ssb client](https://github.com/ssbc/ssb-client)
+
 

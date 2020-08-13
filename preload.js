@@ -88,9 +88,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('title-ext').innerHTML = ' - Running: ' + (msg.value.content.name || msg.value.content.mentions[0].name);
                 const code = values.join('')
                 window.setTimeout(() => {
-                  const fun = new Function('root', 'ssb', 'pull', code);
+                  const fun = new Function('root', 'ssb', 'sbot', 'pull', code);
                   shadowView.innerHTML = '';
-                  fun(shadowView, ssb, pull);
+                  fun(shadowView, ssb, server, pull);
                 }, 0)
               }))
           });
