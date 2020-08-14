@@ -1,8 +1,11 @@
 {
   "name": "patchboot",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A Scuttlebutt bootloader",
   "main": "main.js",
+  "bin": {
+    "patchboot-install": "./app-installer.js"
+  },
   "scripts": {
     "start": "electron .",
     "generate-png": "convert-svg-to-png img/shelve.svg --width 64px ",
