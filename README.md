@@ -19,6 +19,24 @@ The UI will show all apps it finds in the ScuttleVerse visible to you.
 
 The folder `demo-apps` contains some simple example apps allongside with scripts to publish them.
 
+Aletrnatived `patchboot-install` can be used to deploy any js-file. It can be used within the `script` of npm projects as with the following `package.json`:
+
+```
+{
+  "name": "patchboot-example-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "deploy-app": "patchboot-install FeedApp.js 'Feed App' 'An app deployed with patchboot-install'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "patchboot": "0.0.1"
+  }
+}
+```
+
 ## How does it work?
 
 Apps are advertised using mesages of the type `patchboot-app` like the followig
