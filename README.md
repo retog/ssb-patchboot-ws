@@ -17,7 +17,7 @@ The UI will show all apps it finds in the ScuttleVerse visible to you.
 
 ## Publishing apps
 
-The folder `play` contains some simple example apps allongside with scripts to publish them.
+The folder `demo-apps` contains some simple example apps allongside with scripts to publish them.
 
 ## How does it work?
 
