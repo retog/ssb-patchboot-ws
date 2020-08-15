@@ -31,7 +31,7 @@ Aletrnatived `patchboot-install` can be used to deploy any js-file. It can be us
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "patchboot": "0.0.1"
   }
 }
