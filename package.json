@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron .",
     "generate-png": "convert-svg-to-png img/shelve.svg --width 64px ",
-    "package": "electron-packager --all --overwrite ."
+    "package": "electron-packager --all --overwrite .",
+    "test-server": "ssb_appname=ssb-test ssb-server start"
   },
   "repository": "https://github.com/retog/patchboot-electron",
   "keywords": [
