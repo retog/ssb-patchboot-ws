@@ -10,6 +10,7 @@
     "start": "electron .",
     "generate-png": "convert-svg-to-png img/shelve.svg --width 64px ",
     "package": "electron-packager --all --overwrite .",
+    "deploy": "sudo cp -R patchboot-linux-x64/* /usr/local/lib/patchboot",
     "test-server": "ssb_appname=ssb-test ssb-server start"
   },
   "repository": "https://github.com/retog/patchboot-electron",
