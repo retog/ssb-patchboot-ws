@@ -39,6 +39,8 @@ window.addEventListener('DOMContentLoaded', () => {
       const appsArea = document.getElementById('apps-area')
       const view = document.getElementById('view')
       const shadowView = view.attachShadow({ mode: 'closed' });
+      const shadowHtml = document.createElement('html')
+      shadowView.appendChild(shadowHtml)
       const opts = {
         reverse: true,
         query: [
@@ -66,6 +68,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       })
       
+      let headObserver = null;
 
       pull(sbot.query.read(opts), pull.drain(function (msg) {
         if (!msg.value) {
@@ -89,9 +92,22 @@ window.addEventListener('DOMContentLoaded', () => {
                   document.getElementById('title-ext').innerHTML = ' - Running: ' + (msg.value.content.name || msg.value.content.mentions[0].name);
                   const code = values.join('')
                   window.setTimeout(() => {
-                    const fun = new Function('root', 'ssb', 'sbot', 'pull', code);
-                    shadowView.innerHTML = '';
-                    fun(shadowView, ssb, sbot, pull);
+                    const outerHead = document.getElementsByTagName('head')[0]
+                    const config = { attributes: false, childList: true, subtree: false }
+                    const callback = function (mutationsList, observer) {
+                      mutationsList.forEach(mutation => {
+                        mutation.addedNodes.forEach(n => shadowHtml.getElementsByTagName('head')[0].appendChild(n))
+                      })
+                    }
+                    if (headObserver) {
+                      headObserver.disconnect()
+                    }
+                    headObserver = new MutationObserver(callback);
+                    headObserver.observe(outerHead, config);
+                    const fun = new Function('document','root', 'ssb', 'sbot', 'pull', code);
+                    shadowHtml.innerHTML = '';
+                    shadowHtml.createElement = document.createElement
+                    fun(document, shadowHtml.getElementsByTagName('body')[0], ssb, sbot, pull);
                   }, 0)
                 }))
             });
