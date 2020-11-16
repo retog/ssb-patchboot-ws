@@ -1,19 +1,23 @@
-# PatchBoot Electron
+# PatchBoot Firefox
 
 Bootstrapp your Secure Scuttlebutt Client.
 
 ## Functionality
 
-PatchBoot Electron provides an electron app that allows executing small app retrieved via ssb.
+PatchBoot Electron provides a firefox app that allows executing small app retrieved via ssb.
 
 ## Usage
 
 You need to have an instance of [ssb-server](https://github.com/ssbc/ssb-server) running. If you have [Patchwork](https://github.com/ssbc/patchwork/) installed and running you have this already. If the data and keys are not stored in `~/.ssb` you need to set `ssb_appname` accordingly.
 
-    npm install
-    npm run start
-
-The UI will show all apps it finds in the ScuttleVerse visible to you.
+- Install with `npm install --prod`
+  to skip the electron devDependencies.
+- npm install -g browserify
+- Put your public key in preload.js
+- Run build.sh to build the browser scripts.
+- Have ws://localhost:8989 enabled in your ~/.ssb/config
+- Get your browser public key from localStorage,
+  and add it to your "master" array in ~/.ssb/config
 
 ## Publishing apps
 

@@ -14,12 +14,14 @@ window.addEventListener('DOMContentLoaded', () => {
     if (element) element.innerText = text
   }
 
+  /*
   for (const type of ['chrome', 'node', 'electron']) {
     replaceText(`${type}-version`, process.versions[type])
   }
   if (process.env.ssb_appname) {
     replaceText(`app_name`, 'SSB App: '+process.env.ssb_appname+'.')
   } 
+  */
 
   document.getElementById('toggle-info').addEventListener('click', (e) => {
     e.preventDefault;
@@ -30,7 +32,9 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('apps-area').classList.toggle('hidden')
   })
 
-  ssb((err, sbot) => {
+  ssb({
+    remote: 'ws://localhost:8989~shs:lOUVT+Phkvai9a/cCS/RKo+S9hnPAQdVixms/7ldpPA='
+  }, (err, sbot) => {
     if (err) {
       console.log('could not get keys, got err', err);
     }
