@@ -1,17 +1,16 @@
 {
-  "name": "patchboot",
+  "name": "patchboot-web",
   "version": "0.0.1",
-  "description": "A Scuttlebutt bootloader",
+  "description": "A Patchboot (Scuttlebutt bootloader) web app",
   "main": "main.js",
   "bin": {
     "patchboot-install": "./app-installer.js"
   },
   "scripts": {
-    "start": "electron .",
-    "generate-png": "convert-svg-to-png img/shelve.svg --width 64px ",
-    "package": "electron-packager --all --overwrite .",
-    "deploy": "sudo cp -R patchboot-linux-x64/* /usr/local/lib/patchboot",
-    "test-server": "ssb_appname=ssb-test ssb-server start"
+    "start": "node main.js",
+    "browserify": "run-s browserify:*",
+    "browserify:ssb": "browserify -r ssb-client -i bufferutil -i utf-8-validate -o public/ssb-client.js",
+    "browserify:app": "browserify preload.js -u ssb-client -o public/preload.bundle.js"
   },
   "repository": "https://github.com/retog/patchboot-electron",
   "keywords": [
@@ -24,9 +23,12 @@
   "devDependencies": {
     "convert-svg-to-png": "^0.5.0",
     "electron": "^9.2.0",
-    "electron-packager": "^15.0.0"
+    "electron-packager": "^15.0.0",
+    "npm-run-all": "^4.1.5"
   },
   "dependencies": {
+    "browserify": "^17.0.0",
+    "express": "^4.17.1",
     "prismjs": "^1.21.0",
     "pull-paramap": "^1.2.2",
     "pull-stream": "^3.6.14",

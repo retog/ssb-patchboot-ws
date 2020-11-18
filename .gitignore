@@ -1,2 +1,4 @@
 node_modules
 patchboot-*-*
+public/preload.bundle.js
+public/ssb-client.js
