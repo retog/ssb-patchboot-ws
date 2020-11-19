@@ -31,9 +31,10 @@ window.addEventListener('DOMContentLoaded', () => {
     e.preventDefault;
     document.getElementById('apps-area').classList.toggle('hidden')
   })
-
+  const remote = 'ws://'+window.location.hostname+':8989~shs:'+window.serverPubKey
+  console.log('remote: ', remote)
   ssb({
-    remote: 'ws://'+window.location.hostname+':8989~shs:WWkpyBqKC6MmyF8AZ3mhaLIK4NbLte4etr4cYlFiGdI=.ed25519'
+    remote
   }, (err, sbot) => {
     if (err) {
       console.log('could not get keys, got err', err);

@@ -32,13 +32,14 @@ fs.writeFileSync(
   JSON.stringify(manifest, undefined,2)
 )
 
+const entryPage = new EntryPage(server.keys.public)
 
 const app = express();
 
 app.use(express.static('public'))
 
 // on the request to root (localhost:3000/)
-app.get('/', EntryPage);
+app.get('/', (req, res) => entryPage.render(req, res));
 
 // Change the 404 message modifing the middleware
 app.use(function(req, res, next) {
