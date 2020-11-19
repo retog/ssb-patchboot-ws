@@ -33,7 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 
   ssb({
-    remote: 'ws://localhost:8989~shs:lOUVT+Phkvai9a/cCS/RKo+S9hnPAQdVixms/7ldpPA='
+    remote: 'ws://'+window.location.hostname+':8989~shs:WWkpyBqKC6MmyF8AZ3mhaLIK4NbLte4etr4cYlFiGdI=.ed25519'
   }, (err, sbot) => {
     if (err) {
       console.log('could not get keys, got err', err);

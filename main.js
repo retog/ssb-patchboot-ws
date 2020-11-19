@@ -1,8 +1,39 @@
 const express = require('express');
 const { EntryPage } = require('./lib/EntryPage.js')
-console.log('entry', EntryPage )
 
-var app = express();
+const Server = require('ssb-server')
+const config = require('ssb-config')
+const fs = require('fs')
+const path = require('path')
+
+// add plugins
+Server
+  .use(require('ssb-master'))
+  .use(require('ssb-gossip'))
+  .use(require('ssb-replicate'))
+  .use(require('ssb-backlinks'))
+  .use(require('ssb-blobs'))
+  .use(require('ssb-ws'))
+  .use(require('ssb-query'))
+  .use(require('ssb-friends'))
+  .use(require('ssb-links'))
+  .use(require('ssb-ooo'))
+  .use(require('ssb-ebt'))
+  .use(require('ssb-invite'))
+
+config.master.push("@lPycwhn7dAtZcCdb5ErppkM5KVZI+em4e5TFQMn3+sY=.ed25519")
+const server = Server(config)
+
+// save an updated list of methods this server has made public
+// in a location that ssb-client will know to check
+const manifest = server.getManifest()
+fs.writeFileSync(
+  path.join(config.path, 'manifest.json'), // ~/.ssb/manifest.json
+  JSON.stringify(manifest, undefined,2)
+)
+
+
+const app = express();
 
 app.use(express.static('public'))
 
