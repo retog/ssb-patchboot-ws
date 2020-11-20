@@ -31,18 +31,43 @@ window.addEventListener('DOMContentLoaded', () => {
     e.preventDefault;
     document.getElementById('apps-area').classList.toggle('hidden')
   })
-  const remote = 'ws://'+window.location.hostname+':8989~shs:'+window.serverPubKey
+  const ssbHost = window.location.hostname+':8989'
+  const remote = 'ws://'+ssbHost+'~shs:'+window.serverPubKey
   console.log('remote: ', remote)
   ssb({
     remote
   }, (err, sbot) => {
+    const view = document.getElementById('view')
     if (err) {
+      const warningArea = document.createElement('div')
+      warningArea.classList.add('warning')
+      warningArea.classList.add('block')
+      const clientId = JSON.parse(localStorage['/.ssb/secret']).id
+      document.getElementById('info').classList.add('hidden')
+      if (err.message.startsWith('method:manifest')) {
+        const instructions = `
+        <p>
+        It appears that access to the SSB Sever running on ${ssbHost} has not yet been granted to this web location and this browser.
+        </p>
+        <p>
+        Copy the public key <code>${clientId}</code> and put it into your <code>~/.ssb/config</code>
+        as an item in a top-level array property called “master”, like this:
+        </p>
+        <pre>
+        "master": [
+          "${clientId}"
+        ],</pre>
+        <p>After adding the key you'll need to restart the server.</p>`.replaceAll('\n        ','\n')
+        warningArea.innerHTML = instructions
+      } else {
+        warningArea.innerText = err.message
+      }
+      view.appendChild(warningArea)
       console.log('could not get keys, got err', err);
     }
     else {
       const votesManager = new VotesManager(sbot)
       const appsArea = document.getElementById('apps-area')
-      const view = document.getElementById('view')
       const shadowView = view.attachShadow({ mode: 'closed' });
       const shadowHtml = document.createElement('html')
       shadowView.appendChild(shadowHtml)
