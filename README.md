@@ -4,7 +4,7 @@ Bootstrapp your Secure Scuttlebutt Client.
 
 ## Functionality
 
-PatchBoot Electron provides a firefox app that allows executing small app retrieved via ssb.
+PatchBoot Web provides a web app that allows executing in the browser small app retrieved via ssb.
 
 ## Usage
 
