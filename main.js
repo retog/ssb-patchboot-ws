@@ -20,6 +20,7 @@ Server
   .use(require('ssb-ooo'))
   .use(require('ssb-ebt'))
   .use(require('ssb-invite'))
+  .use(require('ssb-search'))
 
 //config.master.push("@lPycwhn7dAtZcCdb5ErppkM5KVZI+em4e5TFQMn3+sY=.ed25519")
 const server = Server(config)
