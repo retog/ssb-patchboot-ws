@@ -1,10 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 const { EntryPage } = require('./lib/EntryPage.js')
+const package = require('./package.json')
 
 module.exports = {
   name: 'patchboot-ws',
-  version: '0.1.0',
+  version: package.version,
   manifest: {},
   init: function (sbot) {
     console.log(`initializing patchboot at http://${sbot.config.ws.host}:${sbot.config.ws.port}/patchboot/`)
