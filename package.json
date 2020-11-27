@@ -4,6 +4,7 @@
   "description": "A Patchboot (Scuttlebutt bootloader) web app as ws-plugin",
   "main": "main.js",
   "scripts": {
+    "prepublish": "run-s build",
     "build": "run-s browserify:*",
     "browserify:ssb": "browserify -r ssb-client -i bufferutil -i utf-8-validate -o public/ssb-client.js",
     "browserify:app": "browserify preload.js -u ssb-client -o public/preload.bundle.js"
@@ -17,20 +18,13 @@
   "license": "MIT",
   "devDependencies": {
     "npm-run-all": "^4.1.5",
-    "browserify": "^17.0.0"
-  },
-  "dependencies": {
-    "flumedb": "^2.1.8",
-    "prismjs": "^1.21.0",
+    "browserify": "^17.0.0",
     "pull-paramap": "^1.2.2",
     "pull-stream": "^3.6.14",
-    "ssb-backlinks": "^2.1.1",
     "ssb-blobs": "^1.2.3",
-    "ssb-client": "^4.9.0",
-    "ssb-ebt": "^5.6.7",
-    "ssb-friends": "^4.3.0",
-    "ssb-gossip": "^1.1.1",
-    "ssb-invite": "^2.1.6",
-    "ssb-ws": "^6.2.3"
+    "ssb-client": "^4.9.0"
+  },
+  "dependencies": {
+    
   }
 }
