@@ -21,7 +21,11 @@ module.exports = {
         const subpath = req.url.substring(11)
         const filepath = path.join(__dirname,'public', subpath)
         fs.readFile(filepath, (err, data) => {
-          if (err) console.log(`${err} getting ${filepath}`)
+          if (err) {
+            console.log(`${err} getting ${filepath}`)
+            res.statusCode = 301
+            res.end(err.message)
+          }
           else res.end(data)
         })
       } else next()
