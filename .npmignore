@@ -1,0 +1,3 @@
+# need to have this file as otherwise .gitignore is used instead
+
+node_modules
