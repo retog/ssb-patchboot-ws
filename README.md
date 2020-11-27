@@ -39,4 +39,8 @@ The link points to the JavaScript comprising the app. The JavaScript code has ac
 - `pull`: the [pull-stream](https://github.com/pull-stream/pull-stream) function object
 - `ssb`: [*deprecated: use `sbot` instead*] the [ssb client](https://github.com/ssbc/ssb-client)
 
+## Credits
+
+The original patch allowing to use Patchboot in a browser was proposed by Charles E. Lehner aka [cel-desktop](@lOUVT+Phkvai9a/cCS/RKo+S9hnPAQdVixms/7ldpPA=.ed25519) with this post: [%25Mv0Jr5X%2BujVmiVKyoRKHNKMvBSkrewundFLYFUsMLrg%3D.sha256](%25Mv0Jr5X%2BujVmiVKyoRKHNKMvBSkrewundFLYFUsMLrg%3D.sha256).
+
 
