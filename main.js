@@ -24,7 +24,7 @@ module.exports = {
         fs.readFile(filepath, (err, data) => {
           if (err) {
             console.log(`${err} getting ${filepath}`)
-            res.statusCode = 301
+            res.statusCode = 400
             res.end(err.message)
           }
           else res.end(data)
