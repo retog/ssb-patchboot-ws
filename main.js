@@ -7,7 +7,7 @@ module.exports = {
   version: '0.1.0',
   manifest: {},
   init: function (sbot) {
-    console.log(`initializing patchboot at http:${sbot.config.ws.host}:${sbot.config.ws.port}/patchboot/`)
+    console.log(`initializing patchboot at http://${sbot.config.ws.host}:${sbot.config.ws.port}/patchboot/`)
     const serverPublicKey = sbot.id.substring(1)
     const entryPage = new EntryPage(serverPublicKey)
     sbot.ws.use(function (req, res, next) {
