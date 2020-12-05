@@ -13,7 +13,7 @@ Install the plugin with:
 
 You need to restart `ssb-server` for the plugin to be active.
 
-When the plugin is active, you can access the path `patchboot` on the webserver exkposed by ssb-ws, typically this is at [http://localhost:8989/patchboot/](http://localhost:8989/patchboot/). When you access this URI for the first time from a browser you will be given a key that you have to add to the ssb-server configuration as instuvcted in the browser. Once you have added the key you will need to restart the server one more time.
+When the plugin is active, you can access patchboot by default on port 5585, you can configure this port with the `port` property in the plugin config in ssb-server configuration (normally in `~/.ssb/config`). When you access this URI for the first time from a browser you will be given a key that you have to add to the ssb-server configuration as instructed in the browser. Once you have added the key you will need to restart the server one more time.
 
 ## Publishing apps
 
