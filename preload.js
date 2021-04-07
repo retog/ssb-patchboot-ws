@@ -32,7 +32,8 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('apps-area').classList.toggle('hidden')
   })
   const ssbHost = window.location.hostname+':'+window.ssbPort
-  const remote = 'ws://'+ssbHost+'~shs:'+window.serverPubKey
+  const ssbBaseUri = window.ssbBaseUri || 'ws://'+ssbHost
+  const remote = ssbBaseUri+'~shs:'+window.serverPubKey
   console.log('remote: ', remote)
   ssb({
     remote
