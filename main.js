@@ -24,8 +24,21 @@ module.exports = {
             console.log(`${err} getting ${filepath}`)
             res.statusCode = 400
             res.end(err.message)
+          } else {
+            if (req.url.endsWith('.html')) {
+              res.writeHead(200, {'Content-Type': 'text/html'});
+            }
+            if (req.url.endsWith('.png')) {
+              res.writeHead(200, {'Content-Type': 'image/png'});
+            }
+            if (req.url.endsWith('.css')) {
+              res.writeHead(200, {'Content-Type': 'text/css'});
+            }
+            if (req.url.endsWith('.js')) {
+              res.writeHead(200, {'Content-Type': 'application/javascript'});
+            }
+            res.end(data)
           }
-          else res.end(data)
         })
       } else {
         res.statusCode = 404
