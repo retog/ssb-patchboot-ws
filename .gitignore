@@ -3,3 +3,4 @@ patchboot-*-*
 public/preload.bundle.js
 public/ssb-client.js
 public/patch-boot.js
+public/scuttle-shell-browser-consumer.js

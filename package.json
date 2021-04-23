@@ -5,8 +5,9 @@
   "main": "main.js",
   "scripts": {
     "prepublish": "run-s build",
-    "build": "run-s copy:patchboot browserify:*",
+    "build": "run-s copy:* browserify:*",
     "copy:patchboot": "cp ./node_modules/patchboot/public/patch-boot.js public/patch-boot.js",
+    "copy:scuttleconsumer": "cp ./node_modules/scuttle-shell-browser-consumer/site/ssb-connect.js public/scuttle-shell-browser-consumer.js",
     "browserify:ssb": "browserify -r ssb-client -i bufferutil -i utf-8-validate -o public/ssb-client.js",
     "browserify:app": "browserify preload.js -u ssb-client -o public/preload.bundle.js"
   },
