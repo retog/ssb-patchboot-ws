@@ -9,7 +9,7 @@ module.exports = {
   version: package.version,
   manifest: {},
   init: function (sbot) {
-    const ssbBaseUri = sbot.config.plugins["ssb-patchboot-ws"].ssbBaseUri || undefined
+    const ssbBaseUri = sbot.config.plugins["ssb-patchboot-ws"] ? sbot.config.plugins["ssb-patchboot-ws"].ssbBaseUri || undefined : undefined
     const ssbPort = sbot.config.ws.port
     const serverPublicKey = sbot.id.substring(1)
     const entryPage = new EntryPage(serverPublicKey, ssbPort, ssbBaseUri)
