@@ -45,8 +45,8 @@ module.exports = {
         res.end('not found')
       }
     })
-    const port = sbot.config.plugins["ssb-patchboot-ws"].port || 5585
-    const host = sbot.config.plugins["ssb-patchboot-ws"].host || 'localhost'
+    const port = sbot.config.plugins?.["ssb-patchboot-ws"]?.port || 5585
+    const host = sbot.config.plugins?.["ssb-patchboot-ws"]?.host || 'localhost'
     this.httpServer.listen(port, host, function () {
       var hostName = ~host.indexOf(':') ? '[' + host + ']' : host
       console.log('notice', 'Listening on http://' + hostName + ':' + port + '/')
