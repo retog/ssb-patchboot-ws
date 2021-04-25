@@ -5,6 +5,8 @@ Patchboot-ws provides a web app that allows executing in the browser small app r
 
 ## Usage
 
+Note that this plugin requires Node.js >= 14.0.0
+
 Install the plugin with:
 
     ssb-server plugins.install ssb-patchboot-ws -a 1
