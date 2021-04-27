@@ -1,6 +1,6 @@
 {
   "name": "ssb-patchboot-ws",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A Patchboot (Scuttlebutt bootloader) web app as ws-plugin",
   "main": "main.js",
   "scripts": {
