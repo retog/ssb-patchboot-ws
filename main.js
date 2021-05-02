@@ -2,11 +2,11 @@ const fs = require('fs')
 const path = require('path')
 const { EntryPage } = require('./lib/EntryPage.js')
 const http = require('http')
-const package = require('./package.json')
+const packageJson = require('./package.json')
 
 module.exports = {
   name: 'patchboot-ws',
-  version: package.version,
+  version: packageJson.version,
   manifest: {},
   init: function (sbot) {
     const ssbBaseUri = sbot.config.plugins?.["ssb-patchboot-ws"]?.ssbBaseUri
