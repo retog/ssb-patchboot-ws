@@ -2,10 +2,11 @@
   "name": "ssb-patchboot-ws",
   "version": "1.1.5",
   "description": "A Patchboot (Scuttlebutt bootloader) web app as ws-plugin",
-  "main": "main.js",
+  "main": "lib/main.js",
   "scripts": {
-    "prepublish": "run-s build",
-    "build": "run-s copy:* browserify:*",
+    "prepublish": "run-s build:*",
+    "build:plugin": "babel src --out-dir lib",
+    "build:client": "run-s copy:* browserify:*",
     "copy:patchboot": "cp ./node_modules/patchboot/public/patch-boot.js public/patch-boot.js",
     "copy:scuttleconsumer": "cp ./node_modules/scuttle-shell-browser-consumer/site/ssb-connect.js public/scuttle-shell-browser-consumer.js",
     "browserify:ssb": "browserify -r ssb-client -i bufferutil -i utf-8-validate -o public/ssb-client.js",
@@ -19,8 +20,11 @@
   "author": "Reto Gmür",
   "license": "MIT",
   "devDependencies": {
-    "npm-run-all": "^4.1.5",
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.0",
     "browserify": "^17.0.0",
+    "npm-run-all": "^4.1.5",
     "ssb-client": "^4.9.0"
   },
   "dependencies": {

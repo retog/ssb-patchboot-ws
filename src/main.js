@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const { EntryPage } = require('./lib/EntryPage.js')
+const { EntryPage } = require('./EntryPage.js')
 const http = require('http')
-const packageJson = require('./package.json')
+const packageJson = require('../package.json')
 
 module.exports = {
   name: 'patchboot-ws',
@@ -18,7 +18,7 @@ module.exports = {
         entryPage.render(req, res)
       } else if(req.url.startsWith('/')) {
         const subpath = req.url.substring(1)
-        const filepath = path.join(__dirname,'public', subpath)
+        const filepath = path.join(__dirname,'../public', subpath)
         fs.readFile(filepath, (err, data) => {
           if (err) {
             console.log(`${err} getting ${filepath}`)

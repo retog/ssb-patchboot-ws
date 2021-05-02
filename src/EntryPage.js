@@ -1,20 +1,16 @@
-"use strict";
-
-const {
-  name,
-  version
-} = require('../package.json');
+const {name, version} = require('../package.json')
 
 module.exports.EntryPage = class EntryPage {
+
   //define either ssbPort or ssbBaseUri
   constructor(serverPubKey, ssbPort, ssbBaseUri) {
-    this.serverPubKey = serverPubKey;
-    this.ssbPort = ssbPort;
-    this.ssbBaseUri = ssbBaseUri;
+    this.serverPubKey = serverPubKey
+    this.ssbPort = ssbPort
+    this.ssbBaseUri = ssbBaseUri
   }
 
   render(req, res) {
-    const hostname = req.headers.host.split(':')[0];
+    const hostname = req.headers.host.split(':')[0]
     res.end(`
     <!DOCTYPE html>
     <html>
@@ -30,7 +26,7 @@ module.exports.EntryPage = class EntryPage {
     <script>
       window.serverPubKey = '${this.serverPubKey}'
       window.ssbPort = '${this.ssbPort}'
-      ${this.ssbBaseUri ? `window.ssbBaseUri = '${this.ssbBaseUri}'` : ''}
+      ${this.ssbBaseUri ? `window.ssbBaseUri = '${this.ssbBaseUri}'`:''}
     </script>
     <script src="./preload.bundle.js"></script>
     <script type="module">
@@ -43,7 +39,6 @@ module.exports.EntryPage = class EntryPage {
   </body>
 
   </html>
-    `);
+    `)
   }
-
-};
+}
